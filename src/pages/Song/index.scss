@@ -75,6 +75,10 @@
         width: 100px;
         height: 100px;
     }
+    .range-box{
+        display: flex;
+        align-items: center;
+    }
     .rotate{
         animation: rotate 25s linear infinite;
     }
