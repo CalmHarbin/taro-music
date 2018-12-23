@@ -1,0 +1,74 @@
+.SongList{
+    .header{
+        display: flex;
+        border-radius: 13Px 13Px 0 0;
+        height: 45Px;
+        line-height: 45Px;
+        background-color: #fff;
+        align-items:center;
+        font-size: 30px;
+        border-bottom: 1Px solid #eee;
+        overflow: hidden;
+        Image{
+            width: 20Px;
+            height: 20Px;
+            margin-right: 15Px;
+            margin-left: 15Px;
+        }
+        .left{
+            margin-right: auto;
+            color: #333;
+            Text{
+                color: #999;
+            }
+        }
+        .right{
+            height: 100%;
+            padding: 0 8Px;
+            background-color: red;
+            color: #fff;
+            text-align: center;
+            min-width: 110Px;
+        }
+    }
+    .item{
+        display: flex;
+        align-items: center;
+        padding-left: 20Px;
+        font-size: 30px;
+        color: #333;
+        height: 50Px;
+        .left{
+            margin-right: 20Px;
+            color: #888;
+        }
+        .box{
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1Px solid #eee;
+            padding-right: 15Px;
+            height: 100%;
+            overflow:hidden;
+            .middle{
+                display: flex;
+                flex-direction: column;
+                flex:0 0 90%;
+                overflow:hidden;
+                Text{
+                    font-size: 24px;
+                    color: #888;
+                    margin-top: 1Px;
+                }
+            }
+            .right {
+                image{
+                    width: 25Px;
+                    height: 25Px;
+                    margin-top:3Px;
+                }
+            }
+        }
+    }
+}

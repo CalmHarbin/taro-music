@@ -1,0 +1,12 @@
+image {
+    max-width: 100%;
+}
+song-sheet{
+    display: inline-block;
+    width: 32.5%;
+}
+.ellipsis{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
