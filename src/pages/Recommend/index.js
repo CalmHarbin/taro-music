@@ -14,23 +14,29 @@ export default class Recommend extends Taro.Component {
         }
     }
     componentWillMount() {
-        getBanner().then(res => {
-            let arr = [];
-            for (let item of res.banners) {
-                arr.push(item.imageUrl)
-            }
-            this.setState({
-                banner: arr
-            })
+        Taro.showLoading({
+            title: 'loading'
         })
-
-        getPersonalized().then(res => {
-            let random = Math.floor(Math.random() * (res.result.length - 5));
-            // .slice(random, random + 6)
-            this.setState({
-                PersonalizedList: res.result
+        Promise.all([
+            getBanner().then(res => {
+                let arr = [];
+                for (let item of res.banners) {
+                    arr.push(item.imageUrl)
+                }
+                this.setState({
+                    banner: arr
+                })
+            }),
+            getPersonalized().then(res => {
+                let random = Math.floor(Math.random() * (res.result.length - 5));
+                // .slice(random, random + 6)
+                this.setState({
+                    PersonalizedList: res.result
+                })
             })
-        })
+        ]).then(() => {
+            Taro.hideLoading()
+        }) 
     }
 
     render () {
@@ -62,8 +68,6 @@ export default class Recommend extends Taro.Component {
                 {/* 最新音乐 */}
                 {/* <View className='cell-title'>最新音乐<AtIcon value='chevron-right' size='20' color='#999'></AtIcon></View> */}
                 
-
-
             </View>
         )
     }

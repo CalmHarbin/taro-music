@@ -7,8 +7,16 @@
     }
 }
 .Song{
+    .bgBlank{
+        position:absolute;
+        left:0;
+        right:0;
+        top:0;
+        bottom:0;
+        z-index: -1;
+        background-color: rgba(0, 0, 0, .3);
+    }
     .bg{
-        width: 100%;
         position:absolute;
         left:0;
         right:0;
@@ -17,12 +25,8 @@
         background-size:cover!important;
         background-position:bottom center;
         -webkit-filter:blur(40Px);
-        z-index: -1;
+        z-index: -2;
     }
-    .alert{
-        display: none;
-    }
-      
     .info{
         display: flex;
         flex-direction: column;
@@ -72,12 +76,14 @@
         height: 150px;
      }
     .see{
-        width: 100px;
-        height: 100px;
+        width: 75px;
+        height: 75px;
     }
     .range-box{
         display: flex;
         align-items: center;
+        padding: 0 15Px;
+        color:rgba(255,255,255,.5);
     }
     .rotate{
         animation: rotate 25s linear infinite;

@@ -1,0 +1,58 @@
+@keyframes rotate {
+    0%{
+        transform: rotateZ(0deg);
+    }
+    100%{
+        transform: rotateZ(360deg);
+    }
+}
+.SongFooter{
+    .Stance,.box{
+        height: 50Px;
+    }
+    .box{
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        width: 100%;
+        display: flex;
+        padding: 0 15Px 0 10Px;
+        background-color: #fff;
+        align-items:center;
+        border-top:1px solid #eee;
+        .avatar{
+            width: 38Px;
+            height: 38Px;
+            border-radius: 50%;
+            margin-right: 10Px;
+            animation: rotate 25s linear infinite;
+        }
+        Canvas{
+            width: 30Px;
+            height: 30Px;
+        }
+        .content{
+            display: flex;
+            flex-direction: column;
+            width: 55%;
+            overflow: hidden;
+            font-size: 12Px;
+            color: #000;
+            justify-content: center;
+            Text{
+                font-size: 13Px;
+                color: #999;
+            }
+        }
+        .list{
+            width: 25Px;
+            height: 25Px;
+        }
+    }
+    .ellipsis{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
