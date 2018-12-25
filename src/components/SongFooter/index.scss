@@ -29,13 +29,14 @@
             animation: rotate 25s linear infinite;
         }
         Canvas{
-            width: 30Px;
-            height: 30Px;
+            width:30Px;
+            height:30Px;
+            // transform:rotate(-90deg);
         }
         .content{
             display: flex;
             flex-direction: column;
-            width: 55%;
+            width: 61%;
             overflow: hidden;
             font-size: 12Px;
             color: #000;
@@ -46,8 +47,9 @@
             }
         }
         .list{
-            width: 25Px;
-            height: 25Px;
+            width:30Px;
+            height:30Px;
+            margin-left:15Px;
         }
     }
     .ellipsis{

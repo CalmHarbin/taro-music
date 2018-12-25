@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
-import { getSongList, getSong } from '../../api/index'
+import { getSongList, getSong, getLyric } from '../../api/index'
 import { setglobalData, getglobalData } from '../../redux/global_data'
 import SongFooter from '../../components/SongFooter/index'
 import './index.scss'
@@ -76,12 +76,25 @@ export default class SongList extends Taro.Component {
                 })
                 return;
             }
+            getLyric({id: item.id}).then(res => {
+                let LyricList = res.lrc.lyric.split('\n').map(item => {
+                    let arr = item.split(']');
+                    return {
+                        time: arr[0].substr(1),
+                        Text: arr[1]
+                    }
+                })
+                audio._LyricList = LyricList;
+            })
             song.src = res.data[0].url;
             audio.src = res.data[0].url;
             audio.coverImgUrl = item.al.picUrl;
             audio.singer  = item.ar.map(i => {return i.name}).join(' / ');
             audio.title   = item.name;
             audio.id = item.id;
+            audio._picUrl = item.al.picUrl;
+            audio._name = item.name;
+            audio._singer = item.ar.map(i => {return i.name}).join(' / ');
             audio.onCanplay(() => {
                 this.setState({
                     audio: audio
@@ -101,6 +114,7 @@ export default class SongList extends Taro.Component {
         
         //更新播放列表
         setglobalData('songList', this.state.SongList);
+        setglobalData('song',this.state.SongList[0]);
         //播放第一首歌
         getSong({id: this.state.SongList[0].id}).then(res => {
             //如果当前播放的是第一首歌
@@ -117,11 +131,24 @@ export default class SongList extends Taro.Component {
             let song = getglobalData('song');
             song.src = res.data[0].url;
 
+            getLyric({id: this.state.SongList[0].id}).then(res => {
+                let LyricList = res.lrc.lyric.split('\n').map(item => {
+                    let arr = item.split(']');
+                    return {
+                        time: arr[0].substr(1),
+                        Text: arr[1]
+                    }
+                })
+                audio._LyricList = LyricList;
+            })
             audio.src = res.data[0].url;
             audio.coverImgUrl = this.state.SongList[0].al.picUrl;
             audio.singer  = this.state.SongList[0].ar.map(i => {return i.name}).join(' / ');
             audio.title   = this.state.SongList[0].name;
             audio.id = this.state.SongList[0].id;
+            audio._picUrl = this.state.SongList[0].al.picUrl;
+            audio._name = this.state.SongList[0].name;
+            audio._singer = this.state.SongList[0].ar.map(i => {return i.name}).join(' / ');
 
             audio.onCanplay(() => {
                 this.setState({

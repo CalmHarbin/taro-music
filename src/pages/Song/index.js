@@ -32,23 +32,68 @@ export default class Song extends Taro.Component {
         }
     }
     componentWillMount() {
+        let songData = getglobalData('song');
+        let audio = getglobalData('audio');
+
+        //如果播放的是当前歌曲,则不请求
+        if(audio.id == this.$router.params.id) {
+            songData.src = audio.src;
+            //设置title为当前歌曲名
+            Taro.setNavigationBarTitle({
+                title: songData.name
+            })
+            //初始化歌曲的时长
+            audio.onCanplay(() => {
+                this.setState({
+                    currentTime: audio.currentTime * 1000,
+                    longTime: audio.duration * 1000
+                }) 
+            })
+            //监听歌曲播放
+            audio.onTimeUpdate(() => {
+                if(this.state.name === audio._name) {
+                    this.setState({
+                        sliderValue: 100 * audio.currentTime / audio.duration,
+                        currentTime: audio.currentTime * 1000,
+                    })
+                    return;
+                }
+                this.setState({
+                    sliderValue: 100 * audio.currentTime / audio.duration,
+                    currentTime: audio.currentTime * 1000,
+                    longTime: audio.duration * 1000,
+                    img: audio._picUrl,
+                    name: audio._name,
+                    singer: audio._singer,
+                    LyricList: audio._LyricList,
+                })
+            })
+
+            this.setState({
+                img: songData.al.picUrl,
+                name: songData.name,
+                singer: songData.ar.map(i => {return i.name}).join(' / '),
+                audio: audio,
+            })
+            return;
+        }
         Taro.showLoading({
             title: 'loading'
         })
-
-        let songData = getglobalData('song');
-        let audio = getglobalData('audio');
         Promise.all([
             //获取歌曲详情
             getSong({id: this.$router.params.id}).then(res => {
                 //如果播放的不是当前歌曲,则播放当前歌曲;
-                if(audio.id !== this.$router.params.id) {
+                // if(audio.id !== this.$router.params.id) {
                     audio.src = res.data[0].url;
                     audio.coverImgUrl = songData.al.picUrl;
                     audio.singer  = songData.ar.map(i => {return i.name}).join(' / ');
                     audio.title   = songData.name;
                     audio.id = this.$router.params.id;
-                }
+                    audio._picUrl = songData.al.picUrl;
+                    audio._name = songData.name;
+                    audio._singer = songData.ar.map(i => {return i.name}).join(' / ');
+                // }
                 songData.src = res.data[0].url;
                 //设置title为当前歌曲名
                 Taro.setNavigationBarTitle({
@@ -66,7 +111,11 @@ export default class Song extends Taro.Component {
                     this.setState({
                         sliderValue: 100 * audio.currentTime / audio.duration,
                         currentTime: audio.currentTime * 1000,
-                        longTime: audio.duration * 1000
+                        longTime: audio.duration * 1000,
+                        img: audio._picUrl,
+                        name: audio._name,
+                        singer: audio._singer,
+                        LyricList: audio._LyricList,
                     })
                 })
 
@@ -86,10 +135,10 @@ export default class Song extends Taro.Component {
                         Text: arr[1]
                     }
                 })
+                audio._LyricList = LyricList;
                 this.setState({
                     LyricList: LyricList
                 })
-                console.log(LyricList)
             })
         ]).then(() => {
             Taro.hideLoading()
@@ -158,27 +207,17 @@ export default class Song extends Taro.Component {
     */
     prev() {
         prevSong().then(audio => {
-            getLyric({id: audio.id}).then(res => {
-                let LyricList = res.lrc.lyric.split('\n').map(item => {
-                    let arr = item.split(']');
-                    return {
-                        time: arr[0].substr(1),
-                        Text: arr[1]
-                    }
-                })
-                this.setState({
-                    img: audio._picUrl,
-                    name: audio._name,
-                    singer: audio._singer,
-                    audio: audio,
-                    currentTime: 0,
-                    longTime: audio.duration * 1000,
-                    audio: audio,
-                    sliderValue: 0,
-                    LyricList: LyricList
-                })
+            this.setState({
+                img: audio._picUrl,
+                name: audio._name,
+                singer: audio._singer,
+                LyricList: audio._LyricList,
+                audio: audio,
+                currentTime: 0,
+                longTime: audio.duration * 1000,
+                audio: audio,
+                sliderValue: 0,
             })
-            
         })
     }
 
@@ -189,27 +228,17 @@ export default class Song extends Taro.Component {
     */
     next() {
         nextSong().then(audio => {
-            getLyric({id: audio.id}).then(res => {
-                let LyricList = res.lrc.lyric.split('\n').map(item => {
-                    let arr = item.split(']');
-                    return {
-                        time: arr[0].substr(1),
-                        Text: arr[1]
-                    }
-                })
-                this.setState({
-                    img: audio._picUrl,
-                    name: audio._name,
-                    singer: audio._singer,
-                    audio: audio,
-                    currentTime: 0,
-                    longTime: audio.duration * 1000,
-                    audio: audio,
-                    sliderValue: 0,
-                    LyricList: LyricList
-                })
+            this.setState({
+                img: audio._picUrl,
+                name: audio._name,
+                singer: audio._singer,
+                LyricList: audio._LyricList,
+                audio: audio,
+                currentTime: 0,
+                longTime: audio.duration * 1000,
+                audio: audio,
+                sliderValue: 0,
             })
-            
         })
     }
 
