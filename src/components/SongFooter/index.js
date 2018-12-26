@@ -88,7 +88,7 @@ export default class SongFooter extends Taro.Component {
         return (
             <View className='SongFooter' style={this.state.id ? 'display: block' : 'display: none'} >
                 <View className='box'>
-                    <Image onClick={this.go} className={`avatar ${paused ? 'paused' : ''}`} src={this.state.picUrl} />
+                    <Image onClick={this.go} className={`avatar ${paused ? 'paused' : ''}`} src={this.state.picUrl + '?imageView&thumbnail=38x0'} />
                     <View className='content' onClick={this.go}>
                         <View className='ellipsis'>{this.state.name}</View>
                         <Text className='ellipsis'>{this.state.singer}</Text>

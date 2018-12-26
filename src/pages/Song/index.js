@@ -108,6 +108,13 @@ export default class Song extends Taro.Component {
                 })
                 //监听歌曲播放
                 audio.onTimeUpdate(() => {
+                    if(this.state.name === audio._name) {
+                        this.setState({
+                            sliderValue: 100 * audio.currentTime / audio.duration,
+                            currentTime: audio.currentTime * 1000,
+                        })
+                        return;
+                    }
                     this.setState({
                         sliderValue: 100 * audio.currentTime / audio.duration,
                         currentTime: audio.currentTime * 1000,
@@ -255,7 +262,7 @@ export default class Song extends Taro.Component {
         }
         return (
             <View className='Song'>
-                <View className='bg' style={'background:url('+ this.state.img +')'}></View>
+                <View className='bg' style={'background:url('+ this.state.img + '?imageView&thumbnail=480x0' +')'}></View>
                 <View className='bgBlank'></View>
                 
                 <View className='info'>
@@ -263,7 +270,7 @@ export default class Song extends Taro.Component {
                     <View>{this.state.singer}</View>
                     </View>
                     <View className='img-box'>
-                    <Image className={`rotate ${paused ? 'paused' : ''}`} src={this.state.img}></Image>
+                    <Image className={`rotate ${paused ? 'paused' : ''}`} src={this.state.img + '?imageView&thumbnail=480x0'}></Image>
                     </View>
 
                     <View className='range-box'>

@@ -28,10 +28,10 @@ export default class SongSheet extends Taro.Component {
     }
     render () {
         return (
-            <View className='SongSheet item' onClick={ this.go } >
-                <Image src={this.props.picUrl} />
+            <View className='SongSheet item' onClick={this.go} >
+                <Image lazyLoad src={this.props.picUrl} />
                 <Text className='name'>{this.props.name}</Text>
-                <View className='playCount'><Image style='width: 10Px;height:10Px;margin: 3Px 3Px 0 0;display:inline-block;' src={headset} />{ Math.floor(this.props.playCount) > 100000 ? Math.floor(this.props.playCount/10000) + '万' : Math.floor(this.props.playCount) }</View>
+                <View className='playCount'><Image style='position:relative;top:2px;width: 10Px;height:10Px;margin: 3Px 3Px 0 0;display:inline-block;' src={headset} />{ Math.floor(this.props.playCount) > 100000 ? Math.floor(this.props.playCount/10000) + '万' : Math.floor(this.props.playCount) }</View>
                 <View className='shadow'></View>
             </View>
         )

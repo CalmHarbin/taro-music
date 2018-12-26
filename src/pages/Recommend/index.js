@@ -31,7 +31,7 @@ export default class Recommend extends Taro.Component {
                 let random = Math.floor(Math.random() * (res.result.length - 5));
                 // .slice(random, random + 6)
                 this.setState({
-                    PersonalizedList: res.result
+                    PersonalizedList: res.result.slice(random, random + 6)
                 })
             })
         ]).then(() => {
@@ -48,7 +48,7 @@ export default class Recommend extends Taro.Component {
                         this.state.banner.map((item, index) => {
                             return (
                                 <SwiperItem key={index}>
-                                    <Image style='' src={item} />
+                                    <Image lazyLoad style='' src={item  + '?imageView&thumbnail=480x0'} />
                                 </SwiperItem>
                             )
                         })
@@ -60,7 +60,7 @@ export default class Recommend extends Taro.Component {
                 <View className='cell-SongSheet'>
                     {
                         this.state.PersonalizedList.map((item, index) => {
-                            return <SongSheet key={index} Oid={item.id} name={item.name} picUrl={item.picUrl} playCount={item.playCount} />
+                            return <SongSheet key={index} Oid={item.id} name={item.name} picUrl={item.picUrl + '?imageView&thumbnail=250x0'} playCount={item.playCount} />
                         })
                     }
                 </View>

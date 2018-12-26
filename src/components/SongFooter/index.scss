@@ -51,6 +51,9 @@
             height:30Px;
             margin-left:15Px;
         }
+        .paused{
+            animation-play-state:paused;
+        }
     }
     .ellipsis{
         overflow: hidden;
