@@ -2,10 +2,12 @@
 import Taro from '@tarojs/taro'
 import { View, Image, Text, Canvas } from '@tarojs/components'
 import { getglobalData } from '../../redux/global_data'
+import PlayList from '../../components/PlayList/index'
 import './index.scss'
 import play_icn_src_footer from '../../assets/images/play_icn_src_footer.png'
 import pause_icon from '../../assets/images/pause_icon.png'
 import play_icon from '../../assets/images/play_icon.png'
+import defaultMusicAvatar from '../../assets/images/defaultMusicAvatar.jpg'
 
 export default class SongFooter extends Taro.Component {
 
@@ -16,6 +18,8 @@ export default class SongFooter extends Taro.Component {
             picUrl: null,
             singer: null,
             id: null,
+            audio: null,
+            show: false,//控制播放列表是否显示
         }
     }
     componentDidShow() {
@@ -27,12 +31,30 @@ export default class SongFooter extends Taro.Component {
         audio.onTimeUpdate(() => {
             //绘制进度
             this.Draw();
+            if(audio.id && (audio.id !== this.state.id)) {
+                this.setState({
+                    id: audio.id
+                })
+            }
         })
         this.setState({
             name: song.name,
             picUrl: song.al.picUrl,
             singer: song.ar.map(i => {return i.name}).join(' / '),
-            id: song.id
+            id: song.id,
+            audio: audio
+        })
+    }
+
+    close() {
+        this.setState({
+          show: false
+        })
+    }
+
+    show() {
+        this.setState({
+            show: true
         })
     }
 
@@ -52,8 +74,7 @@ export default class SongFooter extends Taro.Component {
         context.moveTo(15, 3)
         context.arc(15, 15, 11, Math.PI * 0 - Math.PI * 0.5, Math.PI * 2 * progress - Math.PI * 0.5, false);
         context.stroke();
-        // context.translate(15,15);
-        // context.rotate(90 * Math.PI / 180);
+
         if(audio.paused) {
             context.drawImage(play_icon,9,9,13,13)
         } else {
@@ -82,21 +103,26 @@ export default class SongFooter extends Taro.Component {
             audio.pause();
         }
         this.Draw();
+        this.setState({
+            audio: audio
+        })
     }
     render () {
-        let paused = getglobalData('audio').paused;
+        let paused = this.state.audio && this.state.audio.paused;
+
         return (
             <View className='SongFooter' style={this.state.id ? 'display: block' : 'display: none'} >
                 <View className='box'>
-                    <Image onClick={this.go} className={`avatar ${paused ? 'paused' : ''}`} src={this.state.picUrl + '?imageView&thumbnail=38x0'} />
+                    <Image onClick={this.go} className={`avatar ${paused ? 'paused' : ''}`} src={this.state.picUrl ? this.state.picUrl + '?imageView&thumbnail=38x0' : defaultMusicAvatar} />
                     <View className='content' onClick={this.go}>
                         <View className='ellipsis'>{this.state.name}</View>
                         <Text className='ellipsis'>{this.state.singer}</Text>
                     </View>
                     <View onClick={this.turnState}><Canvas width='30Px' height='30Px' canvasId='canvas'></Canvas></View>
-                    <Image className='list' src={play_icn_src_footer} />
+                    <Image className='list' onClick={this.show} src={play_icn_src_footer} />
                 </View>
                 <View className='Stance'></View>
+                <PlayList show={this.state.show} onClose={this.close} />
             </View>
         )
     }

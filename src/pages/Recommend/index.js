@@ -11,6 +11,8 @@ export default class Recommend extends Taro.Component {
         this.state = {
             banner: [],
             PersonalizedList: [],
+            current: 0,
+            show: [0],//表示已经显示过的banner
         }
     }
     componentWillMount() {
@@ -28,27 +30,44 @@ export default class Recommend extends Taro.Component {
                 })
             }),
             getPersonalized().then(res => {
-                let random = Math.floor(Math.random() * (res.result.length - 5));
-                // .slice(random, random + 6)
-                this.setState({
-                    PersonalizedList: res.result.slice(random, random + 6)
-                })
+                try{
+                    let random = Math.floor(Math.random() * (res.result.length - 5));
+                    let arr = [];
+                    for(let item of res.result.slice(random, random + 6)) {
+                        arr.push({
+                            id: item.id,
+                            name: item.name,
+                            picUrl: item.picUrl,
+                            playCount: item.playCount
+                        })
+                    }
+                    this.setState({
+                        PersonalizedList: arr
+                    })
+                } catch (err) {}
             })
         ]).then(() => {
             Taro.hideLoading()
         }) 
     }
 
+    swiperChange(e) {
+        if(this.state.show.includes(e.detail.current)) return;
+        this.setState({
+            show: this.state.show.concat([e.detail.current])
+        })
+    }
+
     render () {
         return (
             <View className='Recommend'>
                 {/* banner  */}
-                <Swiper indicatorColor='#fff' indicatorActiveColor='#31c27c' circular indicatorDots autoplay>
+                <Swiper onChange={this.swiperChange} current={this.state.current} indicatorColor='#fff' indicatorActiveColor='#31c27c' circular indicatorDots autoplay>
                     {
                         this.state.banner.map((item, index) => {
                             return (
                                 <SwiperItem key={index}>
-                                    <Image lazyLoad style='' src={item  + '?imageView&thumbnail=480x0'} />
+                                    <Image lazyLoad style='' src={this.state.show.includes(index) ? item  + '?imageView&thumbnail=480x0' : ''} />
                                 </SwiperItem>
                             )
                         })
@@ -64,7 +83,6 @@ export default class Recommend extends Taro.Component {
                         })
                     }
                 </View>
-
                 {/* 最新音乐 */}
                 {/* <View className='cell-title'>最新音乐<AtIcon value='chevron-right' size='20' color='#999'></AtIcon></View> */}
                 

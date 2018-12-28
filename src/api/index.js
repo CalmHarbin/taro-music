@@ -13,11 +13,20 @@ function Api(path, data={}) {
             if(res.statusCode >= 200 && res.statusCode<=300){
                 resolve(res.data)
             } else {
-                Taro.showToast({
-                    title: res.errMsg,
-                    icon: 'none',
-                    duration: 1000
-                })
+                if(res.errMsg) {
+                    Taro.showToast({
+                        title: res.errMsg,
+                        icon: 'none',
+                        duration: 1000
+                    })
+                } else {
+                    Taro.showToast({
+                        title: '出错了',
+                        icon: 'none',
+                        duration: 1000
+                    })
+                    Taro.hideLoading()
+                }
             }
         }).catch(err => {
             Taro.showToast({
@@ -25,6 +34,7 @@ function Api(path, data={}) {
                 icon: 'none',
                 duration: 1000
             })
+            Taro.hideLoading()
             reject(err);
         })
     })
@@ -39,10 +49,16 @@ const getSongList = (data={}) => new Api('/playlist/detail', data);
 const getSong = (data={}) => new Api('/song/url', data);
 //获取歌词
 const getLyric = (data={}) => new Api('/lyric', data);
+//搜索
+const search = (data={}) => new Api('/search', data);
+//热搜
+const searchHot = (data={}) => new Api('/search/hot', data);
 export{
     getBanner,
     getPersonalized,
     getSongList,
     getSong,
     getLyric,
+    search,
+    searchHot,
 }

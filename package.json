@@ -1,8 +1,8 @@
 {
-  "name": "Taro-Sass",
+  "name": "music",
   "version": "1.0.0",
   "private": true,
-  "description": "sass预处理版本",
+  "description": "寻找属于你的音乐",
   "main": "index.js",
   "scripts": {
     "start": "npm run dev:weapp",

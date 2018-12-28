@@ -1,0 +1,52 @@
+.Search{
+    .item{
+        display: flex;
+        align-items: center;
+        padding-left: 20Px;
+        font-size: 30px;
+        color: #333;
+        height: 50Px;
+        .left{
+            margin-right: 20Px;
+            color: #888;
+        }
+        .box{
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1Px solid #eee;
+            padding-right: 15Px;
+            height: 100%;
+            overflow:hidden;
+            .middle{
+                display: flex;
+                flex-direction: column;
+                flex:0 0 100%;
+                overflow:hidden;
+                Text{
+                    font-size: 24px;
+                    color: #888;
+                    margin-top: 1Px;
+                }
+            }
+            .right {
+                image{
+                    width: 25Px;
+                    height: 25Px;
+                    margin-top:3Px;
+                }
+            }
+        }
+    }
+    .scrollview{
+        height: calc(100vh - 90Px);
+    }
+    .hot{
+        padding: 10Px 15Px;
+    }
+    at-tag{
+        margin: 5Px;
+        display:inline-block;
+    }
+}

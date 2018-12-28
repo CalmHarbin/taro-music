@@ -14,6 +14,7 @@ import play_btn_next from '../../assets/images/play_btn_next.png'
 import play_icn_src from '../../assets/images/play_icn_src.png'
 import play_btn_play from '../../assets/images/play_btn_play.png'
 import play_btn_pause from '../../assets/images/play_btn_pause.png'
+import defaultMusicAvatar from '../../assets/images/defaultMusicAvatar.jpg'
 
 
 export default class Song extends Taro.Component {
@@ -29,6 +30,7 @@ export default class Song extends Taro.Component {
             audio: null,
             sliderValue: 0,//进度条当前位置,0~100
             LyricList: [],//歌词
+            time: 0,//当前播放的秒数,用来优化更新频率
         }
     }
     componentWillMount() {
@@ -46,21 +48,27 @@ export default class Song extends Taro.Component {
             audio.onCanplay(() => {
                 this.setState({
                     currentTime: audio.currentTime * 1000,
+                    time: Math.floor(audio.currentTime),
                     longTime: audio.duration * 1000
                 }) 
             })
             //监听歌曲播放
             audio.onTimeUpdate(() => {
+                //防止一秒内频繁更新
+                if(Math.floor(audio.currentTime) === this.state.time) return;
+                //减少更新数据
                 if(this.state.name === audio._name) {
                     this.setState({
                         sliderValue: 100 * audio.currentTime / audio.duration,
                         currentTime: audio.currentTime * 1000,
+                        time: Math.floor(audio.currentTime),
                     })
                     return;
                 }
                 this.setState({
                     sliderValue: 100 * audio.currentTime / audio.duration,
                     currentTime: audio.currentTime * 1000,
+                    time: Math.floor(audio.currentTime),
                     longTime: audio.duration * 1000,
                     img: audio._picUrl,
                     name: audio._name,
@@ -103,21 +111,27 @@ export default class Song extends Taro.Component {
                 audio.onCanplay(() => {
                     this.setState({
                         currentTime: audio.currentTime * 1000,
+                        time: Math.floor(audio.currentTime),
                         longTime: audio.duration * 1000
                     }) 
                 })
                 //监听歌曲播放
                 audio.onTimeUpdate(() => {
+                    //防止一秒内频繁更新
+                    if(Math.floor(audio.currentTime) === this.state.time) return;
+                    //减少更新数据
                     if(this.state.name === audio._name) {
                         this.setState({
                             sliderValue: 100 * audio.currentTime / audio.duration,
-                            currentTime: audio.currentTime * 1000,
+                            currentTime: Math.floor(audio.currentTime) * 1000,
+                            time: Math.floor(audio.currentTime),
                         })
                         return;
                     }
                     this.setState({
                         sliderValue: 100 * audio.currentTime / audio.duration,
                         currentTime: audio.currentTime * 1000,
+                        time: Math.floor(audio.currentTime),
                         longTime: audio.duration * 1000,
                         img: audio._picUrl,
                         name: audio._name,
@@ -135,17 +149,19 @@ export default class Song extends Taro.Component {
             }),
             //获取歌词
             getLyric({id: this.$router.params.id}).then(res => {
-                let LyricList = res.lrc.lyric.split('\n').map(item => {
-                    let arr = item.split(']');
-                    return {
-                        time: arr[0].substr(1),
-                        Text: arr[1]
-                    }
-                })
-                audio._LyricList = LyricList;
-                this.setState({
-                    LyricList: LyricList
-                })
+                try {
+                    let LyricList = res.lrc.lyric.split('\n').map(item => {
+                        let arr = item.split(']');
+                        return {
+                            time: arr[0].substr(1),
+                            Text: arr[1]
+                        }
+                    })
+                    audio._LyricList = LyricList;
+                    this.setState({
+                        LyricList: LyricList
+                    })
+                } catch (err) {}
             })
         ]).then(() => {
             Taro.hideLoading()
@@ -221,6 +237,7 @@ export default class Song extends Taro.Component {
                 LyricList: audio._LyricList,
                 audio: audio,
                 currentTime: 0,
+                time: 0,
                 longTime: audio.duration * 1000,
                 audio: audio,
                 sliderValue: 0,
@@ -242,6 +259,7 @@ export default class Song extends Taro.Component {
                 LyricList: audio._LyricList,
                 audio: audio,
                 currentTime: 0,
+                time: 0,
                 longTime: audio.duration * 1000,
                 audio: audio,
                 sliderValue: 0,
@@ -260,9 +278,10 @@ export default class Song extends Taro.Component {
         } else if (mode === 3) {
             modeImg = play_icn_shuffle;//随机播放
         }
+        // console.log(111,this.state.img)
         return (
             <View className='Song'>
-                <View className='bg' style={'background:url('+ this.state.img + '?imageView&thumbnail=480x0' +')'}></View>
+                <View className='bg' style={'background:url('+ (this.state.img ? this.state.img  + '?imageView&thumbnail=480x0' : defaultMusicAvatar) +')'}></View>
                 <View className='bgBlank'></View>
                 
                 <View className='info'>
@@ -270,7 +289,7 @@ export default class Song extends Taro.Component {
                     <View>{this.state.singer}</View>
                     </View>
                     <View className='img-box'>
-                    <Image className={`rotate ${paused ? 'paused' : ''}`} src={this.state.img + '?imageView&thumbnail=480x0'}></Image>
+                    <Image className={`rotate ${paused ? 'paused' : ''}`} src={this.state.img ? this.state.img  + '?imageView&thumbnail=480x0' : defaultMusicAvatar}></Image>
                     </View>
 
                     <View className='range-box'>

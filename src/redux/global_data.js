@@ -9,9 +9,9 @@ const globalData = {
     songList: [],//播放列表
 }
 //更新歌词
-function updateLyric(id) {
+export function updateLyric(id) {
     getLyric({id: id}).then(res => {
-        let LyricList = res.lrc.lyric.split('\n').map(item => {
+        let LyricList = res.lrc && res.lrc.lyric.split('\n').map(item => {
             let arr = item.split(']');
             return {
                 time: arr[0].substr(1),
@@ -22,7 +22,7 @@ function updateLyric(id) {
     })
 }
 //更新歌曲
-function update(item) {
+export function update(item) {
     return new Promise(resolve => {
         getSong({id: item.id}).then((res) => {
             backgroundAudioManager.src = res.data[0].url;

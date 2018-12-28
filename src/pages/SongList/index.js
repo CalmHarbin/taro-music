@@ -25,12 +25,23 @@ export default class SongList extends Taro.Component {
             title: 'loading'
         })
         getSongList({id: this.$router.params.id}).then(res => {
-            this.setState({
-                subscribedCount: res.playlist.subscribedCount,
-                SongList: res.playlist.tracks,
-            },() => {
-                Taro.hideLoading()
-            })
+            try{
+                let arr = [];
+                for(let item of res.playlist.tracks) {
+                    arr.push({
+                        al: {picUrl: item.al.picUrl,name: item.al.name},
+                        ar: item.ar,
+                        name: item.name,
+                        id: item.id
+                    })
+                }
+                this.setState({
+                    subscribedCount: res.playlist.subscribedCount,
+                    SongList: arr,
+                },() => {
+                    Taro.hideLoading()
+                })
+            } catch (err) {} 
         })
     }
     //页面显示时触发
@@ -76,9 +87,9 @@ export default class SongList extends Taro.Component {
                 })
                 return;
             }
-            getLyric({id: item.id}).then(res => {
-                let LyricList = res.lrc.lyric.split('\n').map(item => {
-                    let arr = item.split(']');
+            getLyric({id: item.id}).then(response => {
+                let LyricList = response.lrc && response.lrc.lyric.split('\n').map(i => {
+                    let arr = i.split(']');
                     return {
                         time: arr[0].substr(1),
                         Text: arr[1]
@@ -131,8 +142,8 @@ export default class SongList extends Taro.Component {
             let song = getglobalData('song');
             song.src = res.data[0].url;
 
-            getLyric({id: this.state.SongList[0].id}).then(res => {
-                let LyricList = res.lrc.lyric.split('\n').map(item => {
+            getLyric({id: this.state.SongList[0].id}).then(response => {
+                let LyricList = response.lrc && response.lrc.lyric.split('\n').map(item => {
                     let arr = item.split(']');
                     return {
                         time: arr[0].substr(1),

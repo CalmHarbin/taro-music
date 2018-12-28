@@ -16,6 +16,7 @@ class App extends Component {
             navigationBarTitleText: '音乐达人范',
             navigationBarTextStyle: 'white'
         },
+        "requiredBackgroundModes": ["audio"]
     }
 
     render () {

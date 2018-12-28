@@ -2,7 +2,7 @@
   "miniprogramRoot": "./dist",
   "projectname": "Taro-Sass",
   "description": "sass预处理版本",
-  "appid": "touristappid",
+  "appid": "wxd7c80df0f5faa1a3",
   "setting": {
     "urlCheck": true,
     "es6": false,

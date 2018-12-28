@@ -1,0 +1,50 @@
+.PlayList{
+    .PlayListWarp{
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        z-index: 1002;
+        background-color: rgba(0, 0, 0, .8);
+        color: #fff;
+        font-size: 16Px;
+        .scrollview{
+            height: 50vh;
+            border-top:1px solid rgba(255,255,255,.5);
+            border-bottom:1px solid rgba(255,255,255,.5);
+            padding: 0 15Px;
+            .item{
+                height: 40Px;
+                line-height: 40Px;
+                border-bottom: 1px solid rgba(255,255,255,.2);
+                font-size: 14Px;
+                Text{
+                    font-size: 13Px;
+                    opacity:0.4;
+                    height: 100%;
+                }
+            }
+            .item.active {
+                color: #31c27c;
+            }
+            .item:last-child{
+                border-bottom: none;
+            }
+        }
+        .top,.bottom {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50Px;
+        }
+    }
+    .mark{
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1001;
+        background-color: rgba(0, 0, 0, .2);
+    }
+}
