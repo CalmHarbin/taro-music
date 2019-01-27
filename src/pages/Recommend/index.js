@@ -1,7 +1,7 @@
 import Taro from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
 import { Swiper, SwiperItem, AtIcon  } from 'taro-ui'
-import { getBanner, getPersonalized } from '../../api/index'
+import { getBanner, getPersonalized, toplist } from '../../api/index'
 import SongSheet from '../../components/SongSheet/index'
 import './index.scss'
 
@@ -9,8 +9,9 @@ export default class Recommend extends Taro.Component {
     constructor () {
         super(...arguments)
         this.state = {
-            banner: [],
-            PersonalizedList: [],
+            banner: [],//轮播图
+            PersonalizedList: [],//推荐歌单
+            toplist: [],//排行榜   
             current: 0,
             show: [0],//表示已经显示过的banner
         }
@@ -45,6 +46,21 @@ export default class Recommend extends Taro.Component {
                         PersonalizedList: arr
                     })
                 } catch (err) {}
+            }),
+            toplist().then(res => {
+                let random = Math.floor(Math.random() * (res.list.length - 5));
+                let arr = [];
+                for(let item of res.list.slice(random, random + 6)) {
+                    arr.push({
+                        id: item.id,
+                        name: item.name,
+                        picUrl: item.coverImgUrl,
+                        playCount: item.playCount
+                    })
+                }
+                this.setState({
+                    toplist: arr
+                })
             })
         ]).then(() => {
             Taro.hideLoading()
@@ -55,6 +71,12 @@ export default class Recommend extends Taro.Component {
         if(this.state.show.includes(e.detail.current)) return;
         this.setState({
             show: this.state.show.concat([e.detail.current])
+        })
+    }
+
+    go(title) {
+        Taro.navigateTo({
+            url: `/pages/PersonalizedList/index?name=${title}`
         })
     }
 
@@ -75,7 +97,7 @@ export default class Recommend extends Taro.Component {
                 </Swiper>
 
                 {/* 推荐歌单 */}
-                <View className='cell-title'>推荐歌单<AtIcon value='chevron-right' size='20' color='#999'></AtIcon></View>
+                <View onClick={this.go.bind(this,'推荐歌单')} className='cell-title'>推荐歌单<AtIcon value='chevron-right' size='20' color='#999'></AtIcon></View>
                 <View className='cell-SongSheet'>
                     {
                         this.state.PersonalizedList.map((item, index) => {
@@ -83,8 +105,15 @@ export default class Recommend extends Taro.Component {
                         })
                     }
                 </View>
-                {/* 最新音乐 */}
-                {/* <View className='cell-title'>最新音乐<AtIcon value='chevron-right' size='20' color='#999'></AtIcon></View> */}
+                {/* 排行榜 */}
+                <View onClick={this.go.bind(this,'排行榜')} className='cell-title'>排行榜<AtIcon value='chevron-right' size='20' color='#999'></AtIcon></View>
+                <View className='cell-SongSheet'>
+                    {
+                        this.state.toplist.map((item, index) => {
+                            return <SongSheet key={index} Oid={item.id} name={item.name} picUrl={item.picUrl + '?imageView&thumbnail=250x0'} playCount={item.playCount} />
+                        })
+                    }
+                </View>
                 
             </View>
         )

@@ -30,7 +30,6 @@ export default class PlayList extends Taro.Component {
     }
 
     play(item) {
-        console.log(item);
         update(item);
         updateLyric(item.id)
         this.setState({

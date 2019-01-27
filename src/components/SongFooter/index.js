@@ -31,9 +31,16 @@ export default class SongFooter extends Taro.Component {
         audio.onTimeUpdate(() => {
             //绘制进度
             this.Draw();
+            //播放下一首
             if(audio.id && (audio.id !== this.state.id)) {
+                let song_prev = getglobalData('song');
+                let audio_prev = getglobalData('audio');
                 this.setState({
-                    id: audio.id
+                    name: song_prev.name,
+                    picUrl: song_prev.al.picUrl,
+                    singer: song_prev.ar.map(i => {return i.name}).join(' / '),
+                    id: song_prev.id,
+                    audio: audio_prev
                 })
             }
         })

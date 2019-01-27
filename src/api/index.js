@@ -53,6 +53,9 @@ const getLyric = (data={}) => new Api('/lyric', data);
 const search = (data={}) => new Api('/search', data);
 //热搜
 const searchHot = (data={}) => new Api('/search/hot', data);
+//所有榜单
+const toplist = (data={}) => new Api('/toplist', data);
+
 export{
     getBanner,
     getPersonalized,
@@ -61,4 +64,5 @@ export{
     getLyric,
     search,
     searchHot,
+    toplist,
 }

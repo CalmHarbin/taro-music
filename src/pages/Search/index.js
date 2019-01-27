@@ -49,6 +49,15 @@ export default class Search extends Taro.Component {
         })
         search({keywords:this.state.search,limit: this.state.rows,offset: 1}).then(res => {
             let arr = [];
+            if(!res.result.songs) {
+                Taro.hideLoading();
+                Taro.showToast({
+                    title: '没有找到歌曲',
+                    icon: 'none',
+                    duration: 1000
+                })
+                return;
+            };
             for(let item of res.result.songs) {
                 arr.push({
                     al: {picUrl: item.album.artist.img1v1Url,name: item.album.name},
@@ -96,6 +105,15 @@ export default class Search extends Taro.Component {
             title: 'loading'
         })
         search({keywords:this.state.search,limit: this.state.rows,offset: this.state.page}).then(res => {
+            if(!res.result.songs) {
+                Taro.hideLoading();
+                Taro.showToast({
+                    title: '没有找到歌曲',
+                    icon: 'none',
+                    duration: 1000
+                })
+                return;
+            };
             let arr = [...this.state.SongList];
             for(let item of res.result.songs) {
                 arr.push({
@@ -119,6 +137,15 @@ export default class Search extends Taro.Component {
             title: 'loading'
         })
         search({keywords:text,limit: this.state.rows,offset: 1}).then(res => {
+            if(!res.result.songs) {
+                Taro.hideLoading();
+                Taro.showToast({
+                    title: '没有找到歌曲',
+                    icon: 'none',
+                    duration: 1000
+                })
+                return;
+            };
             let arr = [...this.state.SongList];
             for(let item of res.result.songs) {
                 arr.push({

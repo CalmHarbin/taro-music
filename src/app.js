@@ -8,6 +8,7 @@ class App extends Component {
         pages: [
             'pages/index/index',
             'pages/Song/index',
+            'pages/PersonalizedList/index',
             'pages/SongList/index'
         ],
         window: {

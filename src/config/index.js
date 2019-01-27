@@ -1,3 +1,3 @@
 export default{
-    serverUrl: 'https://www.jungaweb.club'
+    serverUrl: 'https://music.befirer.com'
 }
