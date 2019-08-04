@@ -1,45 +1,52 @@
-import Taro from '@tarojs/taro'
-import { View } from '@tarojs/components'
-import { AtTabs, AtTabsPane } from 'taro-ui'
-import Recommend from '../Recommend/index'
-import Search from '../Search/index'
-import SongFooter from '../../components/SongFooter/index'
-import './index.scss'
+import Taro from '@tarojs/taro';
+import { View } from '@tarojs/components';
+import { AtTabs, AtTabsPane } from 'taro-ui';
+import Recommend from '../Recommend/index';
+import Search from '../Search/index';
+import SongFooter from '../../components/SongFooter/index';
+import './index.scss';
 
 export default class Index extends Taro.Component {
-  constructor () {
-    super(...arguments)
+  constructor() {
+    super(...arguments);
     this.state = {
-      current: 0,
-    }
-    
+      current: 0
+    };
   }
   componentWillMount() {
-
+    // this.props.dispatch(updateLyric({ id: 1111 }));
+    // console.log(this.props.global);
   }
-  handleClick (value) {
+  handleClick(value) {
     this.setState({
       current: value
-    })
+    });
   }
-  
-  render () {
-    const tabList = [{ title: '推荐' }, { title: '搜索' }, { title: '我的' }]
+
+  render() {
+    const tabList = [{ title: '推荐' }, { title: '搜索' }, { title: '我的' }];
     return (
-        <View>
-          <AtTabs swipeable={false} current={this.state.current} tabList={tabList} onClick={this.handleClick.bind(this)}>
-              <AtTabsPane current={this.state.current} index={0} >
-                <Recommend />
-              </AtTabsPane>
-              <AtTabsPane current={this.state.current} index={1}>
-                <Search />
-              </AtTabsPane>
-              <AtTabsPane current={this.state.current} index={2}>
-                  <View style='padding: 100px 50px;background-color: #FAFBFC;text-align: center;'>标签页三的内容</View>
-              </AtTabsPane>
-          </AtTabs>
-          <SongFooter />
-        </View>
-    )
+      <View>
+        <AtTabs
+          swipeable={false}
+          current={this.state.current}
+          tabList={tabList}
+          onClick={this.handleClick.bind(this)}
+        >
+          <AtTabsPane current={this.state.current} index={0}>
+            <Recommend />
+          </AtTabsPane>
+          <AtTabsPane current={this.state.current} index={1}>
+            <Search />
+          </AtTabsPane>
+          <AtTabsPane current={this.state.current} index={2}>
+            <View style='padding: 100px 50px;background-color: #FAFBFC;text-align: center;'>
+              标签页三的内容
+            </View>
+          </AtTabsPane>
+        </AtTabs>
+        <SongFooter />
+      </View>
+    );
   }
 }
