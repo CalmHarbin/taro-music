@@ -35,6 +35,7 @@ export default class SongList extends Taro.Component {
       subscribedCount: 0, //收藏数量
       SongList: [] //展示列表
     };
+    this.insert_list = this.insert_list.bind(this);
   }
   componentWillMount() {
     Taro.showLoading({
@@ -75,6 +76,8 @@ export default class SongList extends Taro.Component {
     if (!this.props.global.song || this.props.global.song.id !== item.id) {
       this.props.dispatch(setGlobalData({ key: 'song', value: item }));
     }
+    //改变播放列表
+    this.insert_list(item);
     Taro.navigateTo({
       url: `/pages/Song/index?id=${item.id}`
     });
@@ -104,28 +107,8 @@ export default class SongList extends Taro.Component {
 
     //获取当前播放的歌曲
     let song = this.props.global.song;
-
-    // 更新播放列表相关-start
-    //获取播放列表
-    let songList = this.props.global.songList;
-    //先判断点击的歌曲是否在播放列表里面
-    let isExist = false;
-    songList.forEach(song_item => {
-      if (song_item.id === song.id) {
-        isExist = true;
-      }
-    });
-    //将点击的歌曲插入到正在播放歌曲的后面
-    if (!isExist) {
-      let idx = 0; //默认当前播放的歌曲为0
-      songList.forEach((song_item, index) => {
-        if (song_item.id === audio.id) {
-          idx = index;
-        }
-      });
-      songList.splice(idx + 1, 0, song);
-    }
-    // 更新播放列表相关-end
+    //改变播放列表
+    this.insert_list(song);
 
     //更新播放为当前歌曲
     this.props.dispatch(update({ item }));
@@ -162,6 +145,34 @@ export default class SongList extends Taro.Component {
       //更新底部播放的状态
       this.refs.SongFooter.update();
     });
+  }
+  /**
+   * 将歌曲插入到正在播放歌曲的后面
+   * @method playAll
+   * @return {undefined}
+   */
+  insert_list(song) {
+    // 更新播放列表相关-start
+    //获取播放列表
+    let songList = this.props.global.songList;
+    //先判断点击的歌曲是否在播放列表里面
+    let isExist = false;
+    songList.forEach(song_item => {
+      if (song_item.id === song.id) {
+        isExist = true;
+      }
+    });
+    //将点击的歌曲插入到正在播放歌曲的后面
+    if (!isExist) {
+      let idx = 0; //默认当前播放的歌曲为0
+      songList.forEach((song_item, index) => {
+        if (song_item.id === this.props.global.audio.id) {
+          idx = index;
+        }
+      });
+      songList.splice(idx + 1, 0, song);
+    }
+    // 更新播放列表相关-end
   }
   /**
    * 收藏全部

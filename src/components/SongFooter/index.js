@@ -133,7 +133,7 @@ export default class SongFooter extends Taro.Component {
           />
           <View className='content' onClick={this.go.bind(this)}>
             <View className='ellipsis'>{this.props.global.song.al.name}</View>
-            <Text className='ellipsis'>{this.props.global.song._singer}</Text>
+            <Text className='ellipsis'>{this.props.global.audio._singer}</Text>
           </View>
           <View onClick={this.turnState.bind(this)}>
             <Canvas width='30Px' height='30Px' canvasId='canvas' />

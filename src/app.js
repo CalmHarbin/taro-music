@@ -7,6 +7,7 @@ import configStore from './redux/store';
 const store = configStore();
 
 class App extends Component {
+  componentDidMount() {}
   config = {
     pages: [
       'pages/index/index',

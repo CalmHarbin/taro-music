@@ -17,9 +17,6 @@ import play_btn_play from '../../assets/images/play_btn_play.png';
 import play_btn_pause from '../../assets/images/play_btn_pause.png';
 import defaultMusicAvatar from '../../assets/images/defaultMusicAvatar.jpg';
 
-let timer = null;
-let isGtTime = null; //是否超过1s, 超过一秒未播放则显示loading
-
 @connect(
   ({ global }) => ({
     global
@@ -48,7 +45,8 @@ export default class Song extends Taro.Component {
     this.state = {
       sliderValue: 0, //进度条当前位置,0~100
       show: false, //控制播放列表是否显示
-      key: 0
+      isGtTime: null, //是否超过1s, 超过一秒未播放则显示loading
+      timer: null
     };
     this.setTime = this.setTime.bind(this);
   }
@@ -71,19 +69,21 @@ export default class Song extends Taro.Component {
     }
     this.setTime();
     //监听播放时间,使用函数节流,防止短时间内多次渲染
-    // let TimeUpdate = this.debounce(() => {
-    //   if (isGtTime) {
-    //     clearInterval(isGtTime);
-    // isGtTime = null;
-    //   } else {
-    //     Taro.hideLoading();
-    //   }
-    //   this.setState({
-    //     sliderValue: (100 * audio.currentTime) / audio.duration
-    //   });
-    // }, 700);
-    // // 更新进度条;
-    // audio.onTimeUpdate(TimeUpdate);
+    let TimeUpdate = this.debounce(() => {
+      if (this.state.isGtTime) {
+        clearInterval(this.state.isGtTime);
+        this.setState({
+          isGtTime: null
+        });
+      } else {
+        Taro.hideLoading();
+      }
+      this.setState({
+        sliderValue: (100 * audio.currentTime) / audio.duration
+      });
+    }, 700);
+    // 更新进度条;
+    audio.onTimeUpdate(TimeUpdate);
   }
 
   componentDidUpdate() {
@@ -94,43 +94,36 @@ export default class Song extends Taro.Component {
       this.setTime();
     });
     audio.onWaiting(() => {
-      isGtTime = setTimeout(() => {
+      let isGtTime = setTimeout(() => {
         Taro.showLoading({
           title: 'loading'
         });
+        this.setState({
+          isGtTime: null
+        });
       }, 1000);
+      this.setState({
+        isGtTime: isGtTime
+      });
     });
   }
 
   setTime() {
-    clearInterval(timer);
-    let time = Math.round(this.props.global.audio.currentTime) | 0;
-    timer = setInterval(() => {
-      //此时表示歌曲已经播放完毕
-      if (this.props.global.audio.duration === 0) {
-        clearInterval(timer);
-        this.setState({
-          time: 0,
-          sliderValue: 0
-        });
-      }
-      //   console.log(this.props.global.audio.duration);
-      //   console.log((100 * (this.state.time + 1)) / this.props.global.audio.duration);
-      if (isGtTime) {
-        clearInterval(isGtTime);
-        isGtTime = null;
-      } else {
-        Taro.hideLoading();
-      }
-      this.setState({
-        time: this.state.time + 1,
-        sliderValue: (100 * (this.state.time + 1)) / this.props.global.audio.duration
-      });
-    }, 1000);
-    this.setState({
-      time: time,
-      sliderValue: (100 * (this.state.time + 1)) / this.props.global.audio.duration
-    });
+    // clearInterval(this.state.timer);
+    // let time = Math.round(this.props.global.audio.currentTime) | 0;
+    // let timer = setInterval(() => {
+    //   console.log(this.props.global.audio.duration);
+    //   console.log((100 * (this.state.time + 1)) / this.props.global.audio.duration);
+    //   this.setState({
+    //     time: this.state.time + 1,
+    //     sliderValue: (100 * (this.state.time + 1)) / this.props.global.audio.duration
+    //   });
+    // }, 1000);
+    // this.setState({
+    //   time: time,
+    //   timer: timer,
+    //   sliderValue: (100 * (this.state.time + 1)) / this.props.global.audio.duration
+    // });
   }
   /*
    * 函数防抖
@@ -161,14 +154,10 @@ export default class Song extends Taro.Component {
     let audio = this.props.global.audio;
     if (audio.paused) {
       audio.play();
-      this.setTime();
     } else {
       audio.pause();
-      clearInterval(timer);
-      this.setState({
-        key: this.state.key + 1
-      });
     }
+    this.setTime();
   }
   /**
    * 滑动进度条控制播放位置
@@ -230,6 +219,8 @@ export default class Song extends Taro.Component {
         callback: item => {
           this.props.dispatch(update({ item }));
           this.props.dispatch(updateLyric({ id: item.id }));
+          //更新进度条
+          this.setTime();
         }
       })
     );
@@ -240,6 +231,7 @@ export default class Song extends Taro.Component {
         callback: item => {
           this.props.dispatch(update({ item }));
           this.props.dispatch(updateLyric({ id: item.id }));
+          this.setTime();
         }
       })
     );
@@ -256,9 +248,9 @@ export default class Song extends Taro.Component {
     } else if (mode === 3) {
       modeImg = play_icn_shuffle; //随机播放
     }
-    // let currentTime = this.props.global.audio.currentTime | 0;
-    let currentTime = this.state.time;
-    // console.log(this.props.global.audio.currentTime);
+    let currentTime = this.props.global.audio.currentTime | 0;
+    // let currentTime = this.state.time;
+    console.log(this.props.global.audio.currentTime);
     return (
       <View className='Song'>
         <View
@@ -275,7 +267,7 @@ export default class Song extends Taro.Component {
 
         <View className='info'>
           <Text>{this.props.global.song.al.name}</Text>
-          <View>{this.props.global.audio._singer}</View>
+          <View>{this.props.global.song._singer}</View>
         </View>
         <View className='img-box'>
           <Image
