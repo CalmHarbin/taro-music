@@ -1,10 +1,10 @@
-import Taro from '@tarojs/taro';
-import { View, ScrollView, Text } from '@tarojs/components';
-import { connect } from '@tarojs/redux';
-import { AtSearchBar, AtTag } from 'taro-ui';
-import { search, searchHot } from '../../api/index';
-import { setGlobalData } from '../../redux/actions';
-import './index.scss';
+import Taro from '@tarojs/taro'
+import { View, ScrollView, Text } from '@tarojs/components'
+import { connect } from '@tarojs/redux'
+import { AtSearchBar, AtTag } from 'taro-ui'
+import { search, searchHot } from '../../api/index'
+import { setGlobalData } from '../../redux/actions'
+import './index.scss'
 
 @connect(
   ({ global }) => ({
@@ -12,13 +12,13 @@ import './index.scss';
   }),
   dispatch => ({
     setGlobalData() {
-      dispatch(setGlobalData());
+      dispatch(setGlobalData())
     }
   })
 )
 export default class Search extends Taro.Component {
   constructor() {
-    super(...arguments);
+    super(...arguments)
     this.state = {
       search: '',
       rows: 100, //每页数量
@@ -26,47 +26,48 @@ export default class Search extends Taro.Component {
       total: 0, //总数
       SongList: [],
       hotList: []
-    };
+    }
+    this.onConfirm = this.onConfirm.bind(this)
   }
 
   componentWillMount() {
     searchHot().then(res => {
-      let arr = [];
+      let arr = []
       for (let item of res.result.hots) {
-        arr.push(item.first);
+        arr.push(item.first)
       }
       this.setState({
         hotList: arr
-      });
-    });
+      })
+    })
   }
 
   onChange(value) {
     this.setState({
       search: value
-    });
+    })
   }
 
   onConfirm() {
     if (!this.state.search) {
       this.setState({
         SongList: []
-      });
-      return;
+      })
+      return
     }
     Taro.showLoading({
       title: 'loading'
-    });
+    })
     search({ keywords: this.state.search, limit: this.state.rows, offset: 1 }).then(res => {
-      let arr = [];
+      let arr = []
       if (!res.result.songs) {
-        Taro.hideLoading();
+        Taro.hideLoading()
         Taro.showToast({
           title: '没有找到歌曲',
           icon: 'none',
           duration: 1000
-        });
-        return;
+        })
+        return
       }
       for (let item of res.result.songs) {
         arr.push({
@@ -74,15 +75,15 @@ export default class Search extends Taro.Component {
           ar: item.artists,
           name: item.name,
           id: item.id
-        });
+        })
       }
       this.setState({
         total: res.result.songCount,
         page: 2,
         SongList: arr
-      });
-      Taro.hideLoading();
-    });
+      })
+      Taro.hideLoading()
+    })
   }
 
   /**
@@ -92,92 +93,98 @@ export default class Search extends Taro.Component {
    * @return {undefined}
    */
   go(item) {
+    //如歌没有播放歌曲 或者 播放的不是当前歌曲,则播放当前歌曲
     if (!this.props.global.song || this.props.global.song.id !== item.id) {
-      this.props.dispatch(setGlobalData({ key: 'song', value: item }));
+      this.props.dispatch(setGlobalData({ key: 'song', value: item }))
     }
+    //更新播放列表
+    this.props.dispatch(setGlobalData({ key: 'songList', value: this.state.SongList }))
+    //设置为顺序播放
+    this.props.dispatch(setGlobalData({ key: 'mode', value: 2 }))
+
     Taro.navigateTo({
       url: `/pages/Song/index?id=${item.id}`
-    });
-    this.onConfirm();
+    })
+    this.onConfirm()
   }
 
   scroll(e) {
-    console.log(e);
+    // console.log(e)
     if (Math.ceil(this.state.total / this.state.rows) < this.state.page) {
       Taro.showToast({
         title: '没有更多了',
         icon: 'none',
         duration: 1000
-      });
-      return;
+      })
+      return
     }
     Taro.showLoading({
       title: 'loading'
-    });
+    })
     search({ keywords: this.state.search, limit: this.state.rows, offset: this.state.page }).then(
       res => {
         if (!res.result.songs) {
-          Taro.hideLoading();
+          Taro.hideLoading()
           Taro.showToast({
             title: '没有找到歌曲',
             icon: 'none',
             duration: 1000
-          });
-          return;
+          })
+          return
         }
-        let arr = [...this.state.SongList];
+        let arr = [...this.state.SongList]
         for (let item of res.result.songs) {
           arr.push({
             al: { picUrl: item.album.artist.img1v1Url, name: item.album.name },
             ar: item.artists,
             name: item.name,
             id: item.id
-          });
+          })
         }
         this.setState({
           total: res.result.songCount,
           page: this.state.page + 1,
           SongList: arr
-        });
-        Taro.hideLoading();
+        })
+        Taro.hideLoading()
       }
-    );
+    )
   }
 
   hotSearch(text) {
     Taro.showLoading({
       title: 'loading'
-    });
+    })
     search({ keywords: text, limit: this.state.rows, offset: 1 }).then(res => {
       if (!res.result.songs) {
-        Taro.hideLoading();
+        Taro.hideLoading()
         Taro.showToast({
           title: '没有找到歌曲',
           icon: 'none',
           duration: 1000
-        });
-        return;
+        })
+        return
       }
-      let arr = [...this.state.SongList];
+      let arr = [...this.state.SongList]
       for (let item of res.result.songs) {
         arr.push({
           al: { picUrl: item.album.artist.img1v1Url, name: item.album.name },
           ar: item.artists,
           name: item.name,
           id: item.id
-        });
+        })
       }
       this.setState({
         total: res.result.songCount,
         page: 2,
         SongList: arr,
         search: text
-      });
-      Taro.hideLoading();
-    });
+      })
+      Taro.hideLoading()
+    })
   }
   render() {
-    let hot = null;
+    let hot = null
     if (this.state.SongList.length === 0) {
       hot = (
         <View>
@@ -188,11 +195,11 @@ export default class Search extends Taro.Component {
                 <AtTag circle key={index} onClick={this.hotSearch.bind(this, item)}>
                   {item}
                 </AtTag>
-              );
+              )
             })}
           </View>
         </View>
-      );
+      )
     }
     return (
       <View className='Search'>
@@ -222,7 +229,7 @@ export default class Search extends Taro.Component {
                     <Text className='ellipsis'>
                       {item.ar
                         .map(i => {
-                          return i.name;
+                          return i.name
                         })
                         .join(' / ')}{' '}
                       - {item.al.name}
@@ -230,10 +237,10 @@ export default class Search extends Taro.Component {
                   </View>
                 </View>
               </View>
-            );
+            )
           })}
         </ScrollView>
       </View>
-    );
+    )
   }
 }

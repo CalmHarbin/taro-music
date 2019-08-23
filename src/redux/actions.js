@@ -1,31 +1,36 @@
-import { UPDATELYRIC, UPDATE, SETGLOBALDATA, PREVSONG, NEXTSONG } from './constants';
-import { getSong, getLyric } from '../api/index';
+import { UPDATELYRIC, UPDATE, SETGLOBALDATA, PREVSONG, NEXTSONG } from './constants'
+import { getSong, getLyric } from '../api/index'
 
 export const updateLyric = payload => dispatch => {
-  let { id } = payload;
+  let { id } = payload
   getLyric({ id: id }).then(res => {
     let LyricList =
       res.lrc &&
       res.lrc.lyric.split('\n').map(item => {
-        let arr = item.split(']');
+        let arr = item.split(']')
+        let time = arr[0].substr(1)
+
         return {
-          time: arr[0].substr(1),
+          time: (time.split(':')[0] * 60 + time.split(':')[1] * 1) | 0,
           Text: arr[1]
-        };
-      });
-    // backgroundAudioManager._picUrl = LyricList; //歌词
+        }
+      })
+
     dispatch({
       type: UPDATELYRIC,
       payload: {
-        LyricList
+        LyricList: LyricList.filter(item => item.Text) //过滤掉空歌词
       }
-    });
-  });
-};
+    })
+  })
+}
 
 export const update = payload => dispatch => {
-  let { item } = payload;
+  let { item } = payload
   getSong({ id: item.id }).then(res => {
+      if (!res.data[0].url) {
+          console.log('该首歌曲无法播放')
+      }
     dispatch({
       type: UPDATE,
       payload: {
@@ -33,7 +38,7 @@ export const update = payload => dispatch => {
         coverImgUrl: item.al.picUrl,
         singer: item.ar
           .map(i => {
-            return i.name;
+            return i.name
           })
           .join(' / '),
         title: item.name,
@@ -41,34 +46,34 @@ export const update = payload => dispatch => {
         _name: item.name,
         _singer: item.ar
           .map(i => {
-            return i.name;
+            return i.name
           })
           .join(' / '),
         _picUrl: item.al.picUrl,
         song: item,
         callback: payload.callback
       }
-    });
-  });
-};
+    })
+  })
+}
 
 export const setGlobalData = payload => dispatch => {
   dispatch({
     type: SETGLOBALDATA,
     payload
-  });
-};
+  })
+}
 
 export const prev = payload => dispatch => {
   dispatch({
     type: PREVSONG,
     payload
-  });
-};
+  })
+}
 
 export const next = payload => dispatch => {
   dispatch({
     type: NEXTSONG,
     payload
-  });
-};
+  })
+}

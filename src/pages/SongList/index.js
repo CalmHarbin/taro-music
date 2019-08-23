@@ -1,13 +1,13 @@
-import Taro from '@tarojs/taro';
-import { View, Image, Text } from '@tarojs/components';
-import { connect } from '@tarojs/redux';
-import { getSongList } from '../../api/index';
-import { setGlobalData, update, updateLyric } from '../../redux/actions';
-import SongFooter from '../../components/SongFooter/index';
-import './index.scss';
-import play_cell from '../../assets/images/play-cell.png';
-import play_list from '../../assets/images/play-list.png';
-import pause_item from '../../assets/images/pause-item.png';
+import Taro from '@tarojs/taro'
+import { View, Image, Text } from '@tarojs/components'
+import { connect } from '@tarojs/redux'
+import { getSongList } from '../../api/index'
+import { setGlobalData, update, updateLyric } from '../../redux/actions'
+import SongFooter from '../../components/SongFooter/index'
+import './index.scss'
+import play_cell from '../../assets/images/play-cell.png'
+import play_list from '../../assets/images/play-list.png'
+import pause_item from '../../assets/images/pause-item.png'
 
 @connect(
   ({ global }) => ({
@@ -15,42 +15,42 @@ import pause_item from '../../assets/images/pause-item.png';
   }),
   dispatch => ({
     setGlobalData() {
-      dispatch(setGlobalData());
+      dispatch(setGlobalData())
     },
     update() {
-      dispatch(update());
+      dispatch(update())
     },
     updateLyric() {
-      dispatch(updateLyric());
+      dispatch(updateLyric())
     }
   })
 )
 export default class SongList extends Taro.Component {
   config = {
     navigationBarTitleText: '歌单'
-  };
+  }
   constructor() {
-    super(...arguments);
+    super(...arguments)
     this.state = {
       subscribedCount: 0, //收藏数量
       SongList: [] //展示列表
-    };
-    this.insert_list = this.insert_list.bind(this);
+    }
+    this.insert_list = this.insert_list.bind(this)
   }
   componentWillMount() {
     Taro.showLoading({
       title: 'loading'
-    });
+    })
     getSongList({ id: this.$router.params.id }).then(res => {
       try {
-        let arr = [];
+        let arr = []
         for (let item of res.playlist.tracks) {
           arr.push({
             al: { picUrl: item.al.picUrl, name: item.al.name },
             ar: item.ar,
             name: item.name,
             id: item.id
-          });
+          })
         }
         this.setState(
           {
@@ -58,14 +58,24 @@ export default class SongList extends Taro.Component {
             SongList: arr
           },
           () => {
-            Taro.hideLoading();
+            Taro.hideLoading()
           }
-        );
+        )
       } catch (err) {}
-    });
+    })
   }
   //页面显示时触发
-  componentDidShow() {}
+  componentDidShow() {
+    //   监听播放和暂停事件
+    this.props.global.audio.onPlay(() => {
+      this.forceUpdate()
+      this.refs.SongFooter.onPlay()
+    })
+    this.props.global.audio.onPause(() => {
+      this.forceUpdate()
+      this.refs.SongFooter.onPause()
+    })
+  }
   /**
    * 跳转到歌曲详情页
    * @method go
@@ -73,14 +83,15 @@ export default class SongList extends Taro.Component {
    * @return {undefined}
    */
   go(item) {
+    //如歌没有播放歌曲 或者 播放的不是当前歌曲,则播放当前歌曲
     if (!this.props.global.song || this.props.global.song.id !== item.id) {
-      this.props.dispatch(setGlobalData({ key: 'song', value: item }));
+      this.props.dispatch(setGlobalData({ key: 'song', value: item }))
     }
     //改变播放列表
-    this.insert_list(item);
+    this.insert_list(item)
     Taro.navigateTo({
       url: `/pages/Song/index?id=${item.id}`
-    });
+    })
   }
   /**
    * 播放当前歌曲
@@ -90,36 +101,36 @@ export default class SongList extends Taro.Component {
    */
   play(item, e) {
     //获取播放器
-    let audio = this.props.global.audio;
+    let audio = this.props.global.audio
     //如果点击的是当前歌曲,则仅改变播放状态
     if (this.props.global.song && this.props.global.song.id === item.id) {
       if (audio.paused) {
-        audio.play();
+        audio.play()
       } else {
-        audio.pause();
+        audio.pause()
       }
       //更新歌曲的全局变量
-      this.props.dispatch(setGlobalData({ key: 'audio', value: audio }));
-      return;
+      this.props.dispatch(setGlobalData({ key: 'audio', value: audio }))
+      return
     }
     //更新歌曲的全局变量
-    this.props.dispatch(setGlobalData({ key: 'song', value: item }));
+    this.props.dispatch(setGlobalData({ key: 'song', value: item }))
 
     //获取当前播放的歌曲
-    let song = this.props.global.song;
+    let song = this.props.global.song
     //改变播放列表
-    this.insert_list(song);
+    this.insert_list(song)
 
     //更新播放为当前歌曲
-    this.props.dispatch(update({ item }));
+    this.props.dispatch(update({ item }))
     //更新歌词
-    this.props.dispatch(updateLyric({ id: item.id }));
+    this.props.dispatch(updateLyric({ id: item.id }))
 
     audio.onCanplay(() => {
       //更新底部播放的状态
-      this.refs.SongFooter.update();
-    });
-    e.stopPropagation();
+      this.refs.SongFooter.update()
+    })
+    e.stopPropagation()
   }
   /**
    * 播放全部
@@ -127,24 +138,24 @@ export default class SongList extends Taro.Component {
    * @return {undefined}
    */
   playAll() {
-    if (!this.state.SongList.length) return;
-    let audio = this.props.global.audio;
+    if (!this.state.SongList.length) return
+    let audio = this.props.global.audio
 
     //切换为顺序播放
-    this.props.dispatch(setGlobalData({ key: 'mode', value: 2 }));
+    this.props.dispatch(setGlobalData({ key: 'mode', value: 2 }))
     //更新播放列表
-    this.props.dispatch(setGlobalData({ key: 'songList', value: this.state.SongList }));
-    this.props.dispatch(setGlobalData({ key: 'song', value: this.state.SongList[0] }));
+    this.props.dispatch(setGlobalData({ key: 'songList', value: this.state.SongList }))
+    this.props.dispatch(setGlobalData({ key: 'song', value: this.state.SongList[0] }))
     //播放第一首歌
     //更新播放为当前歌曲
-    this.props.dispatch(update({ item: this.state.SongList[0] }));
+    this.props.dispatch(update({ item: this.state.SongList[0] }))
     //更新歌词
-    this.props.dispatch(updateLyric({ id: this.state.SongList[0].id }));
+    this.props.dispatch(updateLyric({ id: this.state.SongList[0].id }))
 
     audio.onCanplay(() => {
       //更新底部播放的状态
-      this.refs.SongFooter.update();
-    });
+      this.refs.SongFooter.update()
+    })
   }
   /**
    * 将歌曲插入到正在播放歌曲的后面
@@ -154,23 +165,23 @@ export default class SongList extends Taro.Component {
   insert_list(song) {
     // 更新播放列表相关-start
     //获取播放列表
-    let songList = this.props.global.songList;
+    let songList = this.props.global.songList
     //先判断点击的歌曲是否在播放列表里面
-    let isExist = false;
+    let isExist = false
     songList.forEach(song_item => {
       if (song_item.id === song.id) {
-        isExist = true;
+        isExist = true
       }
-    });
+    })
     //将点击的歌曲插入到正在播放歌曲的后面
     if (!isExist) {
-      let idx = 0; //默认当前播放的歌曲为0
+      let idx = 0 //默认当前播放的歌曲为0
       songList.forEach((song_item, index) => {
         if (song_item.id === this.props.global.audio.id) {
-          idx = index;
+          idx = index
         }
-      });
-      songList.splice(idx + 1, 0, song);
+      })
+      songList.splice(idx + 1, 0, song)
     }
     // 更新播放列表相关-end
   }
@@ -184,12 +195,12 @@ export default class SongList extends Taro.Component {
       title: '暂不支持收藏',
       icon: 'none',
       duration: 1000
-    });
+    })
   }
 
   render() {
-    let paused = this.props.global.audio && this.props.global.audio.paused;
-    let audioId = this.props.global.audio && this.props.global.audio.id;
+    let paused = this.props.global.audio && this.props.global.audio.paused
+    let audioId = this.props.global.audio && this.props.global.audio.id
 
     return (
       <View className='SongList'>
@@ -212,7 +223,7 @@ export default class SongList extends Taro.Component {
                   <Text className='ellipsis'>
                     {item.ar
                       .map(i => {
-                        return i.name;
+                        return i.name
                       })
                       .join(' / ')}{' '}
                     - {item.al.name}
@@ -223,10 +234,10 @@ export default class SongList extends Taro.Component {
                 </View>
               </View>
             </View>
-          );
+          )
         })}
         <SongFooter ref='SongFooter' />
       </View>
-    );
+    )
   }
 }

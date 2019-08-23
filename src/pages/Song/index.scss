@@ -32,6 +32,8 @@
         flex-direction: column;
         padding: 30px 0;
         text-align: center;
+        height: 78Px;
+        box-sizing:border-box;
     }
     .info text{
         font-size: 40px;
@@ -42,16 +44,16 @@
         opacity: 0.6;
     }
     .img-box{
-        width: 500px;
-        height: 500px;
-        border-radius: 50%;
+        height: calc(100vh - 213Px - 78Px);
         overflow: hidden;
-        margin: 0 auto;
-        margin-top: 6vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .img-box image{
+        display: block;
         width: 500px;
-        height: 500px;
+        border-radius: 50%;
     }
     .btn-box{
         padding: 0 30px;
@@ -84,7 +86,6 @@
         align-items: center;
         padding: 0 15Px;
         color:rgba(255,255,255,.5);
-        margin-top:10vh;
     }
     .rotate{
         animation: rotate 25s linear infinite;
@@ -95,4 +96,28 @@
     at-slider{
         flex: 1;
     }
+}
+
+.Lyric {
+    height: 90pX;
+    overflow: hidden;
+    text-align: center;
+    color: #fff;
+    .content {
+        position: relative;
+        animation: top 0.2s;
+    }
+    .Lyric_item {
+        min-height: 28Px;
+        line-height: 28pX;
+        font-size: 14Px;
+    }
+    .Lyric_item.active{
+        font-size: 16Px;
+        color: #31c27c;
+    }
+}
+.footer {
+    height: 213Px;
+    box-sizing:border-box;
 }
