@@ -4,10 +4,8 @@
 ## 页面效果
 <img src='http://hy.mendalegroup.com:81/img/wy_5.jpg' width='32%' /><img src='http://hy.mendalegroup.com:81/img/wy_2.jpg' width='32%' /><img src='http://hy.mendalegroup.com:81/img/wy_6.jpg' width='32%' />
 
-<br/>
 <img src='http://hy.mendalegroup.com:81/img/wy_4.jpg' width='32%' /><img src='http://hy.mendalegroup.com:81/img/wy_3.jpg' width='32%' /><img src='http://hy.mendalegroup.com:81/img/wy_7.jpg' width='32%' />
 
-<br/>
 <img src='http://hy.mendalegroup.com:81/img/wy_8.jpg' width='32%' /><img src='http://hy.mendalegroup.com:81/img/wy_1.jpg' width='32%' />
 
 ## 项目的运行
