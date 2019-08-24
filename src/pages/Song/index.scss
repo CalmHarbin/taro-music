@@ -1,3 +1,5 @@
+@import "~taro-ui/dist/style/components/slider.scss";
+
 @keyframes rotate {
     0%{
         transform: rotateZ(0deg);
@@ -105,7 +107,7 @@
     color: #fff;
     .content {
         position: relative;
-        animation: top 0.2s;
+        animation: bottom 0.2s ease-out;
     }
     .Lyric_item {
         min-height: 28Px;

@@ -1,0 +1,26 @@
+.coverBox {
+  position: relative;
+  background: url(//s3.music.126.net/mobile-new/img/hot_music_bg_2x.jpg?f01a252…=) no-repeat;
+  background-size: contain;
+  height: 146Px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding-left: 15Px;
+
+  .cover {
+    background: url(//s3.music.126.net/mobile-new/img/index_icon_2x.png?5207a28…=) no-repeat;
+    background-size: 166Px 97Px;
+    width: 142Px;
+    height: 67Px;
+    background-position: -24Px -30Px;
+  }
+
+  .time {
+    color: hsla(0, 0%, 100%, .8);
+    font-size: 12Px;
+    transform: scale(.91);
+    transform-origin: left top;
+    margin-top: 10Px;
+  }
+}

@@ -2,7 +2,6 @@
 import Taro from '@tarojs/taro'
 import { View, Image, Text, Canvas } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-// import Recommend from '../Recommend/index';
 import { setGlobalData } from '../../redux/actions'
 import PlayList from '../../components/PlayList/index'
 import './index.scss'
@@ -27,9 +26,13 @@ export default class SongFooter extends Taro.Component {
     this.state = {
       show: false //控制播放列表是否显示
     }
+    this.Draw = this.Draw.bind(this)
   }
   componentDidShow() {
     // this.update()
+    if(this.props.global.song) {
+        this.update()
+    }
   }
 
   onPlay() {

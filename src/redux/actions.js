@@ -1,3 +1,4 @@
+import Taro from '@tarojs/taro'
 import { UPDATELYRIC, UPDATE, SETGLOBALDATA, PREVSONG, NEXTSONG } from './constants'
 import { getSong, getLyric } from '../api/index'
 
@@ -30,6 +31,10 @@ export const update = payload => dispatch => {
   getSong({ id: item.id }).then(res => {
       if (!res.data[0].url) {
           console.log('该首歌曲无法播放')
+          Taro.showModal({
+            title: '抱歉',
+            content: '该首歌曲无法播放',
+          })
       }
     dispatch({
       type: UPDATE,

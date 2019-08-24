@@ -29,6 +29,11 @@
                     color: #888;
                     margin-top: 1Px;
                 }
+                .ellipsis {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
             }
             .right {
                 image{

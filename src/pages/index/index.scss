@@ -1,0 +1,13 @@
+@import "~taro-ui/dist/style/components/tabs.scss";
+@import "~taro-ui/dist/style/components/tag.scss";
+@import "~taro-ui/dist/style/components/search-bar.scss";
+@import "~taro-ui/dist/style/components/button.scss";
+@import "~taro-ui/dist/style/components/icon.scss";
+
+.at-tabs__item--active {
+  color: #dd001b;
+}
+
+.at-tabs__item-underline {
+  background-color: #dd001b;
+}

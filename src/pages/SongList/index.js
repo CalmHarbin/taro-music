@@ -166,6 +166,16 @@ export default class SongList extends Taro.Component {
     // 更新播放列表相关-start
     //获取播放列表
     let songList = this.props.global.songList
+
+    //如果此时播放列表是空的,则全部添加到播放列表中
+    if (songList.length === 0) {
+        // 将热歌全部添加到播放列表里面
+        this.props.dispatch(setGlobalData({ key: 'songList', value: this.state.SongList }))
+        //播放模式切换为顺序播放
+        this.props.dispatch(setGlobalData({ key: 'mode', value: 2 }))
+        return;
+    }
+
     //先判断点击的歌曲是否在播放列表里面
     let isExist = false
     songList.forEach(song_item => {

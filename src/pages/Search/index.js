@@ -43,6 +43,13 @@ export default class Search extends Taro.Component {
   }
 
   onChange(value) {
+      if(!value) {
+        this.setState({
+            SongList: [],
+            search: value
+        })
+        return;
+      }
     this.setState({
       search: value
     })

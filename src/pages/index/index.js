@@ -4,6 +4,7 @@ import { connect } from '@tarojs/redux';
 import { AtTabs, AtTabsPane } from 'taro-ui';
 import Recommend from '../Recommend/index';
 import Search from '../Search/index';
+import HotList from '../hot/index';
 import SongFooter from '../../components/SongFooter/index';
 import { setGlobalData, updateLyric, update } from '../../redux/actions';
 import './index.scss';
@@ -86,6 +87,21 @@ export default class Index extends Taro.Component {
     });
     //初始化全局的背景音频播放器
     this.props.dispatch(setGlobalData({ key: 'audio', value: audio }));
+
+    audio.onCanplay(() => {
+        //更新底部播放的状态
+        this.refs.SongFooter.update()
+    })
+  }
+  //页面显示时触发
+  componentDidShow() {
+    //   监听播放和暂停事件
+    this.props.global.audio.onPlay(() => {
+      this.refs.SongFooter.onPlay()
+    })
+    this.props.global.audio.onPause(() => {
+      this.refs.SongFooter.onPause()
+    })
   }
   handleClick(value) {
     this.setState({
@@ -94,11 +110,11 @@ export default class Index extends Taro.Component {
   }
 
   render() {
-    const tabList = [{ title: '推荐' }, { title: '搜索' }, { title: '我的' }];
+    const tabList = [{ title: '推荐' }, { title: '热歌榜' }, { title: '搜索' }];
     return (
       <View>
         <AtTabs
-          swipeable={false}
+          swipeable
           current={this.state.current}
           tabList={tabList}
           onClick={this.handleClick.bind(this)}
@@ -107,15 +123,13 @@ export default class Index extends Taro.Component {
             <Recommend />
           </AtTabsPane>
           <AtTabsPane current={this.state.current} index={1}>
-            <Search />
+            <HotList />
           </AtTabsPane>
           <AtTabsPane current={this.state.current} index={2}>
-            <View style='padding: 100px 50px;background-color: #FAFBFC;text-align: center;'>
-              标签页三的内容
-            </View>
+            <Search />
           </AtTabsPane>
         </AtTabs>
-        <SongFooter />
+        <SongFooter ref='SongFooter' />
       </View>
     );
   }

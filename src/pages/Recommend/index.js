@@ -21,6 +21,7 @@ export default class Recommend extends Taro.Component {
       title: 'loading'
     });
     Promise.all([
+        //轮播图
       getBanner().then(res => {
         let arr = [];
         for (let item of res.banners) {
@@ -30,6 +31,7 @@ export default class Recommend extends Taro.Component {
           banner: arr
         });
       }),
+      //推荐歌单
       getPersonalized().then(res => {
         try {
           let random = Math.floor(Math.random() * (res.result.length - 5));
@@ -47,6 +49,7 @@ export default class Recommend extends Taro.Component {
           });
         } catch (err) {}
       }),
+      //排行榜
       toplist().then(res => {
         let random = Math.floor(Math.random() * (res.list.length - 5));
         let arr = [];

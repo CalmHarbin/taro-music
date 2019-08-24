@@ -55,7 +55,9 @@ const getLyric = (data = {}) => new Api('/lyric', data);
 const search = (data = {}) => new Api('/search', data);
 //热搜
 const searchHot = (data = {}) => new Api('/search/hot', data);
-//所有榜单
+//所有榜单--这个用歌单详情获取数据
 const toplist = (data = {}) => new Api('/toplist', data);
+//获取榜单---1热歌榜,  
+const getHot = (data = {}) => new Api('/top/list', data)
 
-export { getBanner, getPersonalized, getSongList, getSong, getLyric, search, searchHot, toplist };
+export { getBanner, getPersonalized, getSongList, getSong, getLyric, search, searchHot, toplist, getHot };
