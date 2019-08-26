@@ -225,7 +225,7 @@ export default class SongList extends Taro.Component {
         </View>
         {this.state.SongList.map((item, index) => {
           return (
-            <View className='item' key='index' onClick={this.go.bind(this, item)}>
+            <View className='item' key={index} onClick={this.go.bind(this, item)}>
               <View className='left'>{index + 1}</View>
               <View className='box'>
                 <View className='middle'>
