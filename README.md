@@ -39,6 +39,6 @@ npm start
 # 使用微信开发者工具打开dist目录即可(请勾上微信开发者工具的 不校验合法域名... 这一项)
 ```
 
-[Taro 版本点这里](https://github.com/CalmHarbin/uni-app-music)
+[uni-app 版本点这里](https://github.com/CalmHarbin/uni-app-music)
 
 欢迎 star
